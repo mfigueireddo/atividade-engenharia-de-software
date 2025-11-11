@@ -10,7 +10,7 @@
 git clone <repo-url>
 cd code/market-list/server
 python -m venv venv
-source venv/bin/activate
+./venv/Scripts/activate
 pip install -r requirements.txt
 python -m src.app.main
 ```
