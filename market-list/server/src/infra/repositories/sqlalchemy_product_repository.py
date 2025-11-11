@@ -1,6 +1,6 @@
 from typing import Callable, List, Optional
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.orm import Session
 from src.core.entities.comment import Comment
 from src.core.entities.product import Product
@@ -115,3 +115,39 @@ class SqlAlchemyProductRepository(ProductRepository):
             raise
         finally:
             session.close()
+
+    def update(self, product_id: int, product: Product) -> Product:
+        """Atualiza os dados de um produto existente pelo ID."""
+        session = self._session_factory()
+        try:
+            # Busca o produto existente pelo ID
+            model = (
+                session.query(ProductModel)
+                .filter_by(id=product_id)
+                .first()
+            )
+
+            if not model:
+                raise NoResultFound(f"Produto com ID {product_id} não encontrado.")
+
+            # Atualiza apenas os campos informados
+            if product.nome is not None:
+                model.nome = product.nome
+            if product.quantidade is not None:
+                model.quantidade = product.quantidade
+            if product.valor is not None:
+                model.valor = product.valor
+
+            session.commit()
+            session.refresh(model)
+
+            # Retorna o domínio atualizado
+            return product_mapper.to_domain(model)
+
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+
+

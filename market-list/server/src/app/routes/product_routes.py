@@ -9,6 +9,7 @@ from src.app.schemas import (
     ProdutoDelSchema,
     ProdutoSchema,
     ProdutoViewSchema,
+    ProdutoEditSchema,
     apresenta_produto,
     apresenta_produtos,
 )
@@ -17,6 +18,7 @@ from src.core.use_cases.add_product import AddProductUseCase
 from src.core.use_cases.delete_product import DeleteProductUseCase
 from src.core.use_cases.get_product import GetProductUseCase
 from src.core.use_cases.list_products import ListProductsUseCase
+from src.core.use_cases.edit_product import EditProductUseCase
 
 produto_tag = Tag(
     name="Produto",
@@ -30,6 +32,7 @@ def register_product_routes(
     list_use_case: ListProductsUseCase,
     get_use_case: GetProductUseCase,
     delete_use_case: DeleteProductUseCase,
+    edit_use_case: EditProductUseCase
 ) -> None:
     @app.post(
         "/produto",
@@ -86,3 +89,20 @@ def register_product_routes(
             return {"mesage": "Produto removido", "nome": nome}, 200
         except ProductNotFound as error:
             return {"mesage": str(error)}, 404
+
+    @app.patch(
+        "/produto",
+        tags=[produto_tag],
+        responses={"200": ProdutoEditSchema, "410": ErrorSchema, "404": ErrorSchema},
+    )
+    def edit_produto(form: ProdutoEditSchema):
+        try:
+            produto = edit_use_case.execute(
+                form.id, form.nome, form.quantidade, form.valor
+            )
+            return apresenta_produto(produto), 200
+        except ProductNotFound as error:
+            return {"mesage": str(error)}, 410
+        except Exception:
+            return {"mesage": "Não foi possível salvar novo item :/"}, 400
+

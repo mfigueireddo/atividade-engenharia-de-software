@@ -5,6 +5,7 @@ from src.core.use_cases.add_comment import AddCommentUseCase
 from src.core.use_cases.add_product import AddProductUseCase
 from src.core.use_cases.delete_product import DeleteProductUseCase
 from src.core.use_cases.get_product import GetProductUseCase
+from src.core.use_cases.edit_product import EditProductUseCase
 from src.core.use_cases.health_check import HealthCheckUseCase
 from src.core.use_cases.list_products import ListProductsUseCase
 from src.infra.db import SessionLocal
@@ -53,3 +54,7 @@ def get_health_check_use_case() -> HealthCheckUseCase:
         service_name_provider=config_service.get_service_name,
         service_version_provider=config_service.get_service_version,
     )
+
+@lru_cache
+def get_edit_product_use_case() -> EditProductUseCase:
+    return EditProductUseCase(get_product_repository())

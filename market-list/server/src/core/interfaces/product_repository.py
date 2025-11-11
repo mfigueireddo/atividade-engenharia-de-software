@@ -33,3 +33,7 @@ class ProductRepository(ABC):
     @abstractmethod
     def add_comment(self, product_id: int, comment: Comment) -> Product:
         """Attach a comment to a product and return the updated product."""
+
+    @abstractmethod
+    def update(self, product_id: int, produto: Product) -> Product:
+        """Atualiza as informações de um produto"""

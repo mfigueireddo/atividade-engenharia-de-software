@@ -48,6 +48,12 @@ class ProdutoDelSchema(BaseModel):
     mesage: str
     nome: str
 
+class ProdutoEditSchema(BaseModel):
+
+    id: int
+    nome: Optional[str] = None
+    quantidade: Optional[int] = None
+    valor: Optional[float] = None
 
 def apresenta_produto(produto: Product) -> dict:
     """Converte a entidade de domínio para resposta JSON."""
