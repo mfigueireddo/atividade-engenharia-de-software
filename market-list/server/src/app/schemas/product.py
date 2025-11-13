@@ -77,6 +77,7 @@ def apresenta_produtos(produtos: List[Product]) -> dict:
                 "nome": produto.nome,
                 "quantidade": produto.quantidade,
                 "valor": produto.valor,
+                "id": produto.id
             }
             for produto in produtos
         ]
